@@ -10,6 +10,7 @@ const index = (req, res) => {
         const responseData = {
             data: results,
             counter: results.length
+
         }
         res.status(200).json(responseData);
     })
