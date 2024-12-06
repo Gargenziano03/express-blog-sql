@@ -1,25 +1,35 @@
 const posts = require('../db/posts.js')
 const fs = require('fs')
+const connection = require('../db/db.js')
 
 const index = (req, res) => {
-    res.json({ data: posts, count: posts.length})
+    const sql = 'SELECT * FROM blog'
+    connection.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: ee });
+        const responseData = {
+            data: results,
+            counter: results.length
+        }
+        res.status(200).json(responseData);
+    })
+
 };
 
 const show = (req, res) => {
-    const post = posts.find((post) => post.title.toLowerCase() === req.params.title) 
+    const post = posts.find((post) => post.title.toLowerCase() === req.params.title)
     if (!post) {
-        return res.status(404).json({ error: 'no post found with tha title'})
+        return res.status(404).json({ error: 'no post found with tha title' })
     }
-    return res.status(200).json({ data: post})
+    return res.status(200).json({ data: post })
 };
 
 const store = (req, res) => {
     const post = {
         title: req.body.title,
-          slug: req.body.slug,
-      content: req.body.content,
-      image: req.body.image,
-      tags: [req.body.tags],
+        slug: req.body.slug,
+        content: req.body.content,
+        image: req.body.image,
+        tags: [req.body.tags],
     }
     posts.push(post)
 
@@ -36,13 +46,13 @@ const store = (req, res) => {
 
 const update = (req, res) => {
     const post = posts.find((post) => post.title.toLowerCase() === req.params.title)
-    if(!post){
-        return res.status(404).json({error: `no post found with this ${req.params.title}`})
+    if (!post) {
+        return res.status(404).json({ error: `no post found with this ${req.params.title}` })
     }
 
     post.title = req.body.title
-    post.slug = req.body.slug 
-    post.content = req.body.content 
+    post.slug = req.body.slug
+    post.content = req.body.content
     post.image = req.body.imge
     post.tags = [req.body.tags]
 
@@ -53,10 +63,10 @@ const update = (req, res) => {
         data: posts
     })
 }
- const destroy = (req, res) => {
+const destroy = (req, res) => {
     const post = posts.find((post) => post.title.toLowerCase() === req.params.title)
-    if(!post){
-        return res.status(404).json({error: `no post found with this ${req.params.title}`})
+    if (!post) {
+        return res.status(404).json({ error: `no post found with this ${req.params.title}` })
     }
 
     const newPosts = posts.filter(post => post.title.toLowerCase() !== req.params.title)
@@ -68,7 +78,7 @@ const update = (req, res) => {
         data: newPosts
     })
 
- }
+}
 
 module.exports = {
     index,
