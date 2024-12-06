@@ -1,11 +1,12 @@
-const posts = require('../db/posts.js')
+//const posts = require('../db/posts.js')
 const fs = require('fs')
-const connection = require('../db/db.js')
+const connection = require('../db/db')
 
 const index = (req, res) => {
-    const sql = 'SELECT * FROM blog'
+    const sql = 'SELECT * FROM posts'
     connection.query(sql, (err, results) => {
-        if (err) return res.status(500).json({ error: ee });
+        if (err) return res.status(500).json({ error: 'Database query failed' });
+
         const responseData = {
             data: results,
             counter: results.length
