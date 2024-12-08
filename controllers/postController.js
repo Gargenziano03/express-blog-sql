@@ -18,6 +18,42 @@ const index = (req, res) => {
 };
 
 const show = (req, res) => {
+    const id = req.params.id
+
+    const sql = `SELECT * FROM pizzas WHERE id = ?`
+
+    const tagsSql = `
+    SELECT tags.*
+    FROM tags
+    JOIN post_tag ON tag.id = post_tag.tag.id
+    WHERE post_tag.post_id ?
+    `;
+
+    connection.query(sql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+
+        if (results.length === 0) return res.status(404).json({ error: `404! Not found` });
+
+        const post = results[0]
+        console.log('Post ogj', pizza);
+
+        connection.query(tagsSql, [id], (err, taagsResults) => {
+
+            if (err) return res.status(500).json({ error: err })
+
+            post.tags = taagsResults;
+
+            const responseData = {
+                data: post
+            }
+
+            console.log(responseData);
+
+
+            res.status(200).json(responseData);
+        })
+
+    });
 
 };
 
